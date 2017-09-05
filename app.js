@@ -2,57 +2,97 @@
 
 const BitScoop = require('bitscoop-sdk');
 const config = require('config');
+const express = require('express');
+const httpErrors = require('http-errors');
 
-const bitscoop = new BitScoop(config.bitscoop.api_key);
 
+let bitscoop = new BitScoop(config.bitscoop.apiKey);
+let services = {};
 
-let sqs = bitscoop.map(config.maps.sqs_id);
-let stripe = bitscoop.map(config.maps.stripe_id);
-let twilio = bitscoop.map(config.maps.twilio_id);
+for (let name in config.services) {
+	if (!config.services.hasOwnProperty(name)) {
+		break;
+	}
 
-let messageId;
-let accountSid = '0123';
-let queueUrl = 'a1b2';
+	let serviceConfig = config.services[name];
+
+	services[name] = {
+		connector: bitscoop.api(serviceConfig.mapId),
+		callOptions: serviceConfig.callOptions
+	}
+}
+
+let app = express();
+
+// Disable insecure header information.
+app.disable('x-powered-by');
+
+app.use('/:service/:endpoint', function(req, res, next) {
+	let service = req.params.service;
+	let endpoint = req.params.endpoint;
+
+	if (!services.hasOwnProperty(service)) {
+		return next(httpErrors(404, 'Service not found.'));
+	}
+
+	console.debug(`Calling ${req.params.endpoint} for service ${req.params.service}...`);
+
+	services[service].connector
+		.endpoint(endpoint)
+		.method(req.method)(services[service].callOptions)
+		.then(function(result) {
+			let [body, ] = result;
+
+			res.json(body);
+		})
+		.catch(function(err) {
+			next(err);
+		});
+});
+
+app.use(function(req, res) {
+	if (!res.finished) {
+		res.status(404);
+		res.json({
+			code: 404,
+			message: 'Resource not found.'
+		});
+	}
+});
+
+app.use(function(err, req, res, next) {
+	let code = (err instanceof httpErrors.HttpError) ? err.status : 500;
+
+	console.error(err);
+
+	if (!res.finished) {
+		res.status(code);
+		res.json({
+			code: code,
+			message: (err instanceof httpErrors.HttpError) ? err.message : 'Internal server error.'
+		});
+	}
+});
 
 
 (async function() {
-	let messageData = await sqs.endpoint('SendMessage').method('GET')({
-		query: {
-			message_body: 'Sending a test message via SQS',
-			message_group_id: '1234',
-			queue_url: queueUrl
-		}
-	});
+	try {
+		let server = await new Promise(function(resolve, reject) {
+			let server = app.listen(8080, 'localhost');
 
-	let queueAttr = await sqs.endpoint('GetQueueAttributes').method('GET')({
-		query: {
-			queue_url: queueUrl
-		}
-	});
+			server.once('listening', function() {
+				resolve(server);
+			});
 
-	let stripeAccount = await stripe.endpoint('Accounts').method('POST')({
-		body: {
-			email: 'demo@example.com',
-			type: 'standard'
-		}
-	});
+			server.once('error', reject);
+		});
 
-	let updatedAccount = await stripe.endpoint('Accounts').method('PATCH')({
-		identifier: stripeAccount.id,
-		body: {
-			business_name: 'Example Business',
-			charges_enabled: true
-		}
-	});
+		console.info('HTTP server listening.', server.address());
 
-	let twilioData = await twilio.endpoint('SendMessage').method('GET')({
-		identifier: accountSid
-	});
+		return server;
+	} catch(err) {
+		console.error(err);
 
-	let message = await twilio.endpoint('GetMessage').method('GET')({
-		identifier: twilioData.MessageSid,
-		query: {
-			account_sid: accountSid
-		}
-	});
-});
+		process.exit(1);
+	}
+})();

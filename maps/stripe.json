@@ -3,119 +3,45 @@
   "name": "Stripe",
   "url": "https://api.stripe.com/v1",
   "headers": {
-    "Authorization": "Bearer {{ headers.stripe_signing_key }}"
+    "Authorization": "Basic {{ parameters.stripe_signing_key }}"
   },
   "endpoints": {
-    "Accounts": {
+    "Charges": {
       "GET": {
         "method": "GET",
-        "single": {
-          "route": {
-            "path": "/accounts/{{ identifier }}"
-          }
-        },
-        "collection": false,
-        "model": {
-          "key": "id",
-          "fields": {
-            "id": "string",
-            "business_name": "string",
-            "charges_enabled": "boolean",
-            "decline_charge_on": {
-              "type": "object",
-              "fields": {
-                "avs_failure": "boolean",
-                "cvc_failure": "boolean"
-              }
-            },
-            "email": "email",
-            "external_accounts": {
-              "type": "object",
-              "fields": {
-                "data": {
-                  "type": "object",
-                  "many": true
-                },
-                "has_more": "boolean",
-                "total_count": "integer",
-                "url": "string"
-              }
-            }
-          }
-        }
-      },
-      "PATCH": {
-        "method": "POST",
         "route": {
-          "path": "/accounts/{{ identifier }}"
+          "data": "data",
+          "path": "/charges"
         },
         "model": {
           "key": "id",
           "fields": {
             "id": "string",
-            "business_name": "string",
-            "charges_enabled": "boolean",
-            "decline_charge_on": {
+            "object": "string",
+            "amount": "integer",
+            "amount_refunded": "integer",
+            "application": "string",
+            "balance_transaction": "string",
+            "captured": "boolean",
+            "created": "string",
+            "currency": "string",
+            "customer": "string",
+            "description": "string",
+            "metadata": {
               "type": "object",
               "fields": {
-                "avs_failure": "boolean",
-                "cvc_failure": "boolean"
+                "order_id": "string"
               }
             },
-            "email": "email",
-            "external_accounts": {
+            "outcome": {
               "type": "object",
               "fields": {
-                "data": {
-                  "type": "object",
-                  "many": true
-                },
-                "has_more": "boolean",
-                "total_count": "integer",
-                "url": "string"
-              }
-            }
-          }
-        }
-      },
-      "POST": {
-        "method": "POST",
-        "route": {
-          "path": "/accounts"
-        },
-        "model": {
-          "key": "id",
-          "fields": {
-            "id": "string",
-            "keys": {
-              "type": "object",
-              "fields": {
-                "publishable": "string",
-                "secret": "string"
+                "network_status": "string",
+                "seller_message": "string",
+                "type": "string"
               }
             },
-            "business_name": "string",
-            "charges_enabled": "boolean",
-            "decline_charge_on": {
-              "type": "object",
-              "fields": {
-                "avs_failure": "boolean",
-                "cvc_failure": "boolean"
-              }
-            },
-            "email": "email",
-            "external_accounts": {
-              "type": "object",
-              "fields": {
-                "data": {
-                  "type": "object",
-                  "many": true
-                },
-                "has_more": "boolean",
-                "total_count": "integer",
-                "url": "string"
-              }
-            }
+            "paid": "boolean"
           }
         }
       }

@@ -1,0 +1,39 @@
+{
+  "bitscoop": {
+    "apiKey": "** INSERT VALID API KEY **"
+  },
+
+  "services": {
+    "github": {
+      "mapId": "** INSERT VALID MAP ID **",
+      "callOptions": {
+        "parameters": {
+          "user": "** INSERT GITHUB USER NAME **",
+          "repo": "** INSERT GITHUB REPO NAME **"
+        }
+      }
+    },
+    "stripe": {
+      "mapId": "** INSERT VALID MAP ID **",
+      "callOptions": {
+        "parameters": {
+          "stripe_signing_key": "** INSERT BASE64-ENCODED STRIPE HTTP BASIC CREDENTIALS **"
+        }
+      }
+    },
+    "twilio": {
+      "mapId": "** INSERT VALID MAP ID **",
+      "callOptions": {
+        "parameters": {
+          "account_sid": "** INSERT TWILIO ACCOUNT SID",
+          "twilio_signing_key": "** INSERT BASE64-ENCODED TWILIO HTTP BASIC CREDENTIALS **"
+        },
+        "body": {
+          "From": "+17145823937",
+          "To": "+19498291286",
+          "Body": "Testing 123"
+        }
+      }
+    }
+  }
+}
