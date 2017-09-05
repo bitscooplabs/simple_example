@@ -1,0 +1,124 @@
+{
+  "version": "1.0",
+  "name": "Stripe",
+  "url": "https://api.stripe.com/v1",
+  "headers": {
+    "Authorization": "Bearer {{ headers.stripe_signing_key }}"
+  },
+  "endpoints": {
+    "Accounts": {
+      "GET": {
+        "method": "GET",
+        "single": {
+          "route": {
+            "path": "/accounts/{{ identifier }}"
+          }
+        },
+        "collection": false,
+        "model": {
+          "key": "id",
+          "fields": {
+            "id": "string",
+            "business_name": "string",
+            "charges_enabled": "boolean",
+            "decline_charge_on": {
+              "type": "object",
+              "fields": {
+                "avs_failure": "boolean",
+                "cvc_failure": "boolean"
+              }
+            },
+            "email": "email",
+            "external_accounts": {
+              "type": "object",
+              "fields": {
+                "data": {
+                  "type": "object",
+                  "many": true
+                },
+                "has_more": "boolean",
+                "total_count": "integer",
+                "url": "string"
+              }
+            }
+          }
+        }
+      },
+      "PATCH": {
+        "method": "POST",
+        "route": {
+          "path": "/accounts/{{ identifier }}"
+        },
+        "model": {
+          "key": "id",
+          "fields": {
+            "id": "string",
+            "business_name": "string",
+            "charges_enabled": "boolean",
+            "decline_charge_on": {
+              "type": "object",
+              "fields": {
+                "avs_failure": "boolean",
+                "cvc_failure": "boolean"
+              }
+            },
+            "email": "email",
+            "external_accounts": {
+              "type": "object",
+              "fields": {
+                "data": {
+                  "type": "object",
+                  "many": true
+                },
+                "has_more": "boolean",
+                "total_count": "integer",
+                "url": "string"
+              }
+            }
+          }
+        }
+      },
+      "POST": {
+        "method": "POST",
+        "route": {
+          "path": "/accounts"
+        },
+        "model": {
+          "key": "id",
+          "fields": {
+            "id": "string",
+            "keys": {
+              "type": "object",
+              "fields": {
+                "publishable": "string",
+                "secret": "string"
+              }
+            },
+            "business_name": "string",
+            "charges_enabled": "boolean",
+            "decline_charge_on": {
+              "type": "object",
+              "fields": {
+                "avs_failure": "boolean",
+                "cvc_failure": "boolean"
+              }
+            },
+            "email": "email",
+            "external_accounts": {
+              "type": "object",
+              "fields": {
+                "data": {
+                  "type": "object",
+                  "many": true
+                },
+                "has_more": "boolean",
+                "total_count": "integer",
+                "url": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

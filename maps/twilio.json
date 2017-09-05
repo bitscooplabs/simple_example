@@ -1,0 +1,57 @@
+{
+  "version": "1.0",
+  "name": "Twilio",
+  "url": "https://api.twilio.com/2010-04-01",
+  "headers": {
+    "Authorization": "Bearer {{ headers.twilio_signing_key }}"
+  },
+  "endpoints": {
+    "SendMessage": {
+      "method": "POST",
+      "route": {
+        "path": "/Accounts/{{ identifier }}/Messages"
+      },
+      "model": {
+        "key": "Sid",
+        "fields": {
+          "MessageSid": "string",
+          "AccountSid": "string",
+          "MessagingServiceSid": "string",
+          "From": "string",
+          "To": "string",
+          "Body": "string",
+          "NumMedia": "integer"
+        }
+      }
+    },
+    "GetMessage": {
+      "method": "GET",
+      "route": {
+        "path": "/Accounts/{{ parameters.account_sid }}/Messages/{{ identifier }}"
+      },
+      "model": {
+        "key": "Sid",
+        "fields": {
+          "Sid": "string",
+          "DateCreated": "datetime",
+          "DateUpdated": "datetime",
+          "DateSent": "datetime",
+          "AccountSid": "string",
+          "MessagingServiceSid": "string",
+          "From": "string",
+          "To": "string",
+          "Body": "string",
+          "NumMedia": "integer",
+          "NumSegments": "integer",
+          "Status": "string",
+          "ErrorCode": "integer",
+          "ErrorMessage": "string",
+          "Direction": "string",
+          "Price": "number",
+          "PriceUnit": "string",
+          "ApiVersion": "string"
+        }
+      }
+    }
+  }
+}
