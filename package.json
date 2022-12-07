@@ -6,7 +6,7 @@
   "dependencies": {
     "bitscoop-sdk": "^0.2.0",
     "config": "^1.26.2",
-    "express": "^4.15.4",
+    "express": "^4.17.3",
     "http-errors": "^1.6.2"
   },
   "devDependencies": {
