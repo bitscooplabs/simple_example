@@ -5,7 +5,7 @@
   "author": "BitScoop Labs, Inc.",
   "dependencies": {
     "bitscoop-sdk": "^0.2.0",
-    "config": "^1.26.2",
+    "config": "^3.3.8",
     "express": "^4.15.4",
     "http-errors": "^1.6.2"
   },
